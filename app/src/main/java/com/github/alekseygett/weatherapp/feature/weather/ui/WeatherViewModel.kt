@@ -5,20 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.alekseygett.weatherapp.feature.weather.domain.WeatherInteractor
-import kotlinx.coroutines.delay
+import com.github.alekseygett.weatherapp.feature.weather.domain.model.WeatherDomainModel
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(private val interactor: WeatherInteractor): ViewModel() {
+    private val _weather: MutableLiveData<WeatherDomainModel> = MutableLiveData()
 
-    private val _weather: MutableLiveData<String> = MutableLiveData("")
-
-    val weather: LiveData<String>
+    val weather: LiveData<WeatherDomainModel>
         get() = _weather
 
     fun requestWeather() {
         viewModelScope.launch {
-            delay(5000) // wait 5 sec
-            _weather.postValue(interactor.getWeather())
+            val weather = interactor.getWeather()
+            _weather.postValue(weather)
         }
     }
 }

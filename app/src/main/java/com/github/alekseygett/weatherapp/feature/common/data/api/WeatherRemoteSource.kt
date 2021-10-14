@@ -1,6 +1,6 @@
-package com.github.alekseygett.weatherapp.feature.weather.data.api
+package com.github.alekseygett.weatherapp.feature.common.data.api
 
-import com.github.alekseygett.weatherapp.feature.weather.data.model.WeatherModel
+import com.github.alekseygett.weatherapp.feature.common.data.model.WeatherModel
 
 class WeatherRemoteSource(private val api: WeatherApi) {
     suspend fun getWeather(): WeatherModel {

@@ -1,7 +1,7 @@
 package com.github.alekseygett.weatherapp
 
 import android.app.Application
-import com.github.alekseygett.weatherapp.feature.weather.di.appModule
+import com.github.alekseygett.weatherapp.feature.weather.di.weatherModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -13,7 +13,7 @@ class WeatherApplication: Application() {
         startKoin {
             androidLogger()
             androidContext(this@WeatherApplication)
-            modules(appModule)
+            modules(weatherModule)
         }
     }
 }

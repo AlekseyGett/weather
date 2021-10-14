@@ -1,4 +1,4 @@
-package com.github.alekseygett.weatherapp.feature.weather.data.model
+package com.github.alekseygett.weatherapp.feature.common.data.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -14,5 +14,5 @@ data class WeatherMainModel(
     @SerializedName("pressure")
     val pressure: Int,
     @SerializedName("humidity")
-    val humidity: Int
+    val humidity: Int,
 )

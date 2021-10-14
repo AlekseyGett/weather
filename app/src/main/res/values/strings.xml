@@ -3,4 +3,12 @@
 
     <string name="settings_button_text">Settings</string>
     <string name="weather_button_text">Weather</string>
+
+    <string name="temperature_label">Temperature:</string>
+    <string name="min_temperature_label">Min temperature:</string>
+    <string name="max_temperature_label">Max temperature:</string>
+    <string name="humidity_label">Humidity:</string>
+    <string name="wind_button_text">Wind</string>
+    
+    <string name="wind_description">%.1fm/s %s</string>
 </resources>

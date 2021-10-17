@@ -1,14 +1,22 @@
 <resources>
     <string name="app_name">Weather</string>
 
-    <string name="settings_button_text">Settings</string>
+    <!-- Main -->
     <string name="weather_button_text">Weather</string>
+    <string name="wind_button_text">Wind</string>
+    <string name="settings_button_text">Settings</string>
+    <string name="city_default_text">Unknown city</string>
 
+    <!-- Weather -->
     <string name="temperature_label">Temperature:</string>
     <string name="min_temperature_label">Min temperature:</string>
     <string name="max_temperature_label">Max temperature:</string>
     <string name="humidity_label">Humidity:</string>
-    <string name="wind_button_text">Wind</string>
-    
+
+    <!-- Wind -->
     <string name="wind_description">%.1fm/s %s</string>
+
+    <!-- Settings -->
+    <string name="city_hint">City</string>
+    <string name="save_button_text">Save</string>
 </resources>

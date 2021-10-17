@@ -8,7 +8,10 @@ import com.github.alekseygett.weatherapp.feature.weather.domain.WeatherInteracto
 import com.github.alekseygett.weatherapp.feature.weather.domain.model.WeatherDomainModel
 import kotlinx.coroutines.launch
 
-class WeatherViewModel(private val interactor: WeatherInteractor): ViewModel() {
+class WeatherViewModel(
+    private val interactor: WeatherInteractor,
+    private val cityName: String
+): ViewModel() {
     private val _weather: MutableLiveData<WeatherDomainModel> = MutableLiveData()
 
     val weather: LiveData<WeatherDomainModel>
@@ -16,7 +19,7 @@ class WeatherViewModel(private val interactor: WeatherInteractor): ViewModel() {
 
     fun requestWeather() {
         viewModelScope.launch {
-            val weather = interactor.getWeather()
+            val weather = interactor.getWeather(cityName)
             _weather.postValue(weather)
         }
     }

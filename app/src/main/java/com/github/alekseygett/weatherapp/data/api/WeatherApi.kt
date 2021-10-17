@@ -1,6 +1,6 @@
-package com.github.alekseygett.weatherapp.feature.common.data.api
+package com.github.alekseygett.weatherapp.data.api
 
-import com.github.alekseygett.weatherapp.feature.common.data.model.WeatherModel
+import com.github.alekseygett.weatherapp.data.model.WeatherModel
 import retrofit2.http.GET
 import retrofit2.http.Query
 

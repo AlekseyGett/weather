@@ -1,4 +1,4 @@
-package com.github.alekseygett.weatherapp.feature.common.data.model
+package com.github.alekseygett.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 

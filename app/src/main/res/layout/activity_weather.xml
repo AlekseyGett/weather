@@ -5,15 +5,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="24dp"
     tools:context=".feature.weather.ui.WeatherActivity">
+
+    <!-- Temperature -->
+    <TextView
+        android:id="@+id/temperatureLabelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/temperature_label" />
 
     <TextView
         android:id="@+id/temperatureText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/temperatureLabelText"
+        app:layout_constraintStart_toEndOf="@id/temperatureLabelText"
+        android:layout_marginStart="8dp" />
+
+    <!-- Min temperature -->
+    <TextView
+        android:id="@+id/minTemperatureLabelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/temperatureLabelText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_marginTop="16dp"
+        android:text="@string/min_temperature_label" />
+
+    <TextView
+        android:id="@+id/minTemperatureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/minTemperatureLabelText"
+        app:layout_constraintStart_toEndOf="@id/minTemperatureLabelText"
+        android:layout_marginStart="8dp" />
+
+    <!-- Max temperature -->
+    <TextView
+        android:id="@+id/maxTemperatureLabelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/minTemperatureLabelText"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:text="@string/max_temperature_label" />
+
+    <TextView
+        android:id="@+id/maxTemperatureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/maxTemperatureLabelText"
+        app:layout_constraintStart_toEndOf="@id/maxTemperatureLabelText"
+        android:layout_marginStart="8dp" />
+
+    <!-- Humidity -->
+    <TextView
+        android:id="@+id/humidityLabelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/maxTemperatureLabelText"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:text="@string/humidity_label" />
+
+    <TextView
+        android:id="@+id/humidityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/humidityLabelText"
+        app:layout_constraintStart_toEndOf="@id/humidityLabelText"
+        android:layout_marginStart="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

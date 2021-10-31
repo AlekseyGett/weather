@@ -2,11 +2,9 @@ package com.github.alekseygett.weatherapp.feature.main.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.github.alekseygett.weatherapp.R
+import com.github.alekseygett.weatherapp.databinding.ActivityMainBinding
 import com.github.alekseygett.weatherapp.feature.settings.ui.SettingsActivity
 import com.github.alekseygett.weatherapp.feature.weather.ui.WeatherActivity
 import com.github.alekseygett.weatherapp.feature.wind.ui.WindActivity
@@ -14,64 +12,61 @@ import com.github.alekseygett.weatherapp.utils.Constants
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity: AppCompatActivity() {
-    private val viewModel: MainViewModel by viewModel()
-    private var cityName = ""
 
-    private lateinit var cityNameText: TextView
-    private lateinit var weatherButton: Button
-    private lateinit var windButton: Button
+    private val viewModel: MainViewModel by viewModel()
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupView()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateCityName()
+        viewModel.processUiEvent(UiEvent.OnCachedCityNameRequest)
     }
 
     private fun setupView() {
-        cityNameText = findViewById(R.id.cityText)
-        windButton = findViewById(R.id.windButton)
-        weatherButton = findViewById(R.id.weatherButton)
-        val settingsButton: Button = findViewById(R.id.settingsButton)
-
-        windButton.setOnClickListener {
+        binding.windButton.setOnClickListener {
             openWindScreen()
         }
 
-        weatherButton.setOnClickListener {
+        binding.weatherButton.setOnClickListener {
             openWeatherScreen()
         }
 
-        settingsButton.setOnClickListener {
+        binding.settingsButton.setOnClickListener {
             openSettingsScreen()
         }
 
-        viewModel.cityName.observe(this, Observer(::updateCityName))
-        viewModel.weatherDataAvailable.observe(this, Observer(::setButtonsEnabled))
+        viewModel.viewState.observe(this, Observer(::render))
     }
 
-    private fun updateCityName(cityName: String) {
-        this.cityName = cityName
-        cityNameText.text = cityName
-    }
+    private fun render(viewState: ViewState) {
+        binding.cityText.text = viewState.cityName
 
-    private fun setButtonsEnabled(enabled: Boolean) {
-        weatherButton.isEnabled = enabled
-        windButton.isEnabled = enabled
+        viewState.cityName.isNotBlank().let { enabled ->
+            binding.weatherButton.isEnabled = enabled
+            binding.windButton.isEnabled = enabled
+        }
     }
 
     private fun openWindScreen() {
+        val cityName = binding.cityText.text.toString()
+
         Intent(this, WindActivity::class.java)
             .apply { putExtra(Constants.cityNameKey, cityName) }
             .also { intent -> startActivity(intent) }
     }
 
     private fun openWeatherScreen() {
+        val cityName = binding.cityText.text.toString()
+
         Intent(this, WeatherActivity::class.java)
             .apply { putExtra(Constants.cityNameKey, cityName) }
             .also { intent -> startActivity(intent) }
@@ -82,4 +77,5 @@ class MainActivity: AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 }

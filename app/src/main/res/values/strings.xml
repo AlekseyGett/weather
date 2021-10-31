@@ -19,4 +19,5 @@
     <!-- Settings -->
     <string name="city_hint">City</string>
     <string name="save_button_text">Save</string>
+    <string name="weather_app_title">Weather</string>
 </resources>

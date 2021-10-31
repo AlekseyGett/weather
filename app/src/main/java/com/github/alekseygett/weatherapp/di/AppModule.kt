@@ -12,17 +12,21 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val weatherRetrofitName = "weatherRetrofit"
+const val WEATHER_RETROFIT_NAME = "weatherRetrofit"
 const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
 val appModule = module {
     single<OkHttpClient> {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
         OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor())
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 
-    single<Retrofit>(named(weatherRetrofitName)) {
+    single<Retrofit>(named(WEATHER_RETROFIT_NAME)) {
         Retrofit.Builder()
             .client(get())
             .baseUrl(BASE_URL)
@@ -31,7 +35,7 @@ val appModule = module {
     }
 
     single<WeatherApi> {
-        get<Retrofit>(named(weatherRetrofitName)).create(WeatherApi::class.java)
+        get<Retrofit>(named(WEATHER_RETROFIT_NAME)).create(WeatherApi::class.java)
     }
 
     single<WeatherRemoteSource> {

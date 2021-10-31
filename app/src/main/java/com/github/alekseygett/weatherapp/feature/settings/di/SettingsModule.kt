@@ -13,11 +13,11 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val citiesRetrofitName = "citiesRetrofit"
+const val CITIES_RETROFIT_NAME = "citiesRetrofit"
 const val BASE_URL = "http://geodb-free-service.wirefreethought.com/"
 
 val settingsModule = module {
-    single<Retrofit>(named(citiesRetrofitName)) {
+    single<Retrofit>(named(CITIES_RETROFIT_NAME)) {
         Retrofit.Builder()
             .client(get())
             .baseUrl(BASE_URL)
@@ -26,7 +26,7 @@ val settingsModule = module {
     }
 
     single<CitiesApi> {
-        get<Retrofit>(named(citiesRetrofitName)).create(CitiesApi::class.java)
+        get<Retrofit>(named(CITIES_RETROFIT_NAME)).create(CitiesApi::class.java)
     }
 
     single<CitiesRemoteSource> {

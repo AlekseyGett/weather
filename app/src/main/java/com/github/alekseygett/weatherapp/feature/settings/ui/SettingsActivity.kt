@@ -4,63 +4,82 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.github.alekseygett.weatherapp.R
+import com.github.alekseygett.weatherapp.databinding.ActivitySettingsBinding
 import com.github.alekseygett.weatherapp.utils.setDebouncingTextListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity: AppCompatActivity() {
+
     private val viewModel: SettingsViewModel by viewModel()
 
-    private lateinit var cityTextField: AutoCompleteTextView
+    private lateinit var binding: ActivitySettingsBinding
+
     private lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupView()
     }
 
-    private fun setupView() {
-        cityTextField = findViewById(R.id.cityDropdown)
-        val saveButton: Button = findViewById(R.id.saveButton)
+    override fun onResume() {
+        super.onResume()
+        viewModel.processUiEvent(UiEvent.OnCachedCityNameRequest)
+    }
 
+    private fun setupView() {
         adapter = ArrayAdapter<String>(
             this,
             R.layout.support_simple_spinner_dropdown_item,
-            listOf()
+            mutableListOf()
         )
 
-        cityTextField.setAdapter(adapter)
+        binding.cityDropdown.setAdapter(adapter)
 
-        cityTextField.setDebouncingTextListener { prefix ->
-            viewModel.requestCitySuggestions(prefix)
+        binding.cityDropdown.setDebouncingTextListener { prefix ->
+            viewModel.processUiEvent(UiEvent.OnRequestSuggestions(prefix))
         }
 
-        saveButton.setOnClickListener {
-            val cityName = cityTextField.text.toString()
-            viewModel.saveCityName(cityName)
+        binding.saveButton.setOnClickListener {
+            val cityName = binding.cityDropdown.text.toString()
+            viewModel.processUiEvent(UiEvent.OnSaveButtonClick(cityName))
         }
 
-        viewModel.cityName.observe(this, Observer(::setCityName))
-        viewModel.citySuggestions.observe(this, Observer(::replaceSuggestions))
-        viewModel.onSaveComplete.observe(this, Observer(::onSaveComplete))
+        viewModel.viewState.observe(this, Observer(::render))
     }
 
-    private fun setCityName(cityName: String) {
-        cityTextField.setText(cityName)
+    private fun render(viewState: ViewState) {
+        if (viewState.isCityNameRequested) {
+            binding.cityDropdown.setText(viewState.cityName)
+            viewModel.processUiEvent(UiEvent.OnCachedCityNameShowed)
+        }
+
+        replaceCityNameSuggestions(viewState.cityNameSuggestions)
+
+        viewState.errorMessage?.let { errorMessage ->
+            showErrorMessage(errorMessage)
+            viewModel.processUiEvent(UiEvent.OnErrorMessageShowed)
+        }
+
+        if (viewState.isSettingsSaved) {
+            finish()
+        }
     }
 
-    private fun replaceSuggestions(suggestions: List<String>) {
+    private fun replaceCityNameSuggestions(suggestions: List<String>) {
         adapter.clear()
         adapter.addAll(suggestions)
     }
 
-    private fun onSaveComplete(complete: Boolean) {
-        if (complete) {
-            finish()
-        }
+    private fun showErrorMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+
 }

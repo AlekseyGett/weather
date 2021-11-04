@@ -12,8 +12,8 @@ data class ViewState(
 
 sealed class UiEvent : Event {
     object OnCachedCityNameRequest : UiEvent()
-    object OnCachedCityNameShowed : UiEvent()
-    object OnErrorMessageShowed : UiEvent()
+    object OnCachedCityNameShow : UiEvent()
+    object OnErrorMessageShow : UiEvent()
     data class OnRequestSuggestions(val prefix: String) : UiEvent()
     data class OnSaveButtonClick(val cityName: String) : UiEvent()
 }

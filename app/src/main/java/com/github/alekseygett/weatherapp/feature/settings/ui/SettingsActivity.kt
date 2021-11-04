@@ -2,8 +2,6 @@ package com.github.alekseygett.weatherapp.feature.settings.ui
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -58,14 +56,14 @@ class SettingsActivity: AppCompatActivity() {
     private fun render(viewState: ViewState) {
         if (viewState.isCityNameRequested) {
             binding.cityDropdown.setText(viewState.cityName)
-            viewModel.processUiEvent(UiEvent.OnCachedCityNameShowed)
+            viewModel.processUiEvent(UiEvent.OnCachedCityNameShow)
         }
 
         replaceCityNameSuggestions(viewState.cityNameSuggestions)
 
         viewState.errorMessage?.let { errorMessage ->
             showErrorMessage(errorMessage)
-            viewModel.processUiEvent(UiEvent.OnErrorMessageShowed)
+            viewModel.processUiEvent(UiEvent.OnErrorMessageShow)
         }
 
         if (viewState.isSettingsSaved) {

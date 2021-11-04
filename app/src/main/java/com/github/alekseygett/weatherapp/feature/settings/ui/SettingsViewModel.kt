@@ -22,10 +22,10 @@ class SettingsViewModel(private val interactor: SettingsInteractor) : BaseViewMo
                 val cityName = interactor.getCachedCityName() ?: ""
                 processDataEvent(DataEvent.OnCachedCityNameRead(cityName))
             }
-            is UiEvent.OnCachedCityNameShowed -> {
+            is UiEvent.OnCachedCityNameShow -> {
                 return previousState.copy(isCityNameRequested = false)
             }
-            is UiEvent.OnErrorMessageShowed -> {
+            is UiEvent.OnErrorMessageShow -> {
                 return previousState.copy(errorMessage = null)
             }
             is UiEvent.OnRequestSuggestions -> {

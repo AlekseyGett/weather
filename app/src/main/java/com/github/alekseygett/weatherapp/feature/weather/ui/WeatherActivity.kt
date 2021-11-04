@@ -1,42 +1,47 @@
 package com.github.alekseygett.weatherapp.feature.weather.ui
 
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import com.github.alekseygett.weatherapp.R
-import com.github.alekseygett.weatherapp.feature.weather.domain.model.WeatherDomainModel
+import com.github.alekseygett.weatherapp.databinding.ActivityWeatherBinding
 import com.github.alekseygett.weatherapp.utils.Constants
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class WeatherActivity: AppCompatActivity() {
-    private val weatherViewModel: WeatherViewModel by viewModel { parametersOf(cityName) }
+
+    private val viewModel: WeatherViewModel by viewModel { parametersOf(cityName) }
+
+    private lateinit var binding: ActivityWeatherBinding
+
     private lateinit var cityName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_weather)
+
+        binding = ActivityWeatherBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         cityName = intent.getStringExtra(Constants.cityNameKey) ?: "Moscow"
 
-        setupView()
+        viewModel.viewState.observe(this, ::render)
+        viewModel.processUiEvent(UiEvent.OnWeatherRequest)
     }
 
-    private fun setupView() {
-        weatherViewModel.weather.observe(this, Observer(::render))
-        weatherViewModel.requestWeather()
+    private fun render(viewState: ViewState) {
+        binding.temperatureText.text = viewState.temperature.toString()
+        binding.minTemperatureText.text = viewState.minTemperature.toString()
+        binding.maxTemperatureText.text = viewState.maxTemperature.toString()
+        binding.humidityText.text = viewState.humidity.toString()
+
+        viewState.errorMessage?.let { errorMessage ->
+            showErrorMessage(errorMessage)
+            viewModel.processUiEvent(UiEvent.OnErrorMessageShow)
+        }
     }
 
-    private fun render(state: WeatherDomainModel) {
-        val temperatureText: TextView = findViewById(R.id.temperatureText)
-        val minTemperatureText: TextView = findViewById(R.id.minTemperatureText)
-        val maxTemperatureText: TextView = findViewById(R.id.maxTemperatureText)
-        val humidityText: TextView = findViewById(R.id.humidityText)
-
-        temperatureText.text = state.temperature.toString()
-        minTemperatureText.text = state.minTemperature.toString()
-        maxTemperatureText.text = state.maxTemperature.toString()
-        humidityText.text = state.humidity.toString()
+    private fun showErrorMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+
 }

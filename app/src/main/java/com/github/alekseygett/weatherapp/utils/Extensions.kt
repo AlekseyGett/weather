@@ -6,7 +6,7 @@ import android.widget.EditText
 import java.util.*
 
 fun EditText.setDebouncingTextListener(
-    debouncePeriod: Long = 100,
+    debouncePeriod: Long = 300,
     onTextChange: (String) -> Unit
 ) {
 
@@ -29,10 +29,10 @@ fun EditText.setDebouncingTextListener(
             )
         }
 
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        }
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-        override fun afterTextChanged(p0: Editable?) {
-        }
+        override fun afterTextChanged(p0: Editable?) {}
+
     })
+
 }

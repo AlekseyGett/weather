@@ -1,35 +1,65 @@
 package com.github.alekseygett.weatherapp.feature.settings.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.alekseygett.weatherapp.base.BaseViewModel
+import com.github.alekseygett.weatherapp.base.Event
 import com.github.alekseygett.weatherapp.feature.settings.domain.SettingsInteractor
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val interactor: SettingsInteractor): ViewModel() {
-    private val _citySuggestions = MutableLiveData<List<String>>()
-    private val _cityName = MutableLiveData<String>()
-    private val _onSaveComplete = MutableLiveData<Boolean>(false)
+class SettingsViewModel(private val interactor: SettingsInteractor) : BaseViewModel<ViewState>() {
 
-    val citySuggestions: LiveData<List<String>> = _citySuggestions
-    val cityName: LiveData<String> = _cityName
-    val onSaveComplete: LiveData<Boolean> = _onSaveComplete
+    override fun initialViewState(): ViewState = ViewState(
+        isCityNameRequested = false,
+        cityName = "",
+        cityNameSuggestions = emptyList(),
+        isSettingsSaved = false,
+        errorMessage = null
+    )
 
-    init {
-        val city = interactor.getSavedCityName() ?: ""
-        _cityName.postValue(city)
-    }
-
-    fun requestCitySuggestions(prefix: String) {
-        viewModelScope.launch {
-            val suggestions = interactor.getCitySuggestions(prefix)
-            _citySuggestions.postValue(suggestions)
+    override suspend fun reduce(event: Event, previousState: ViewState): ViewState? {
+        when (event) {
+            is UiEvent.OnCachedCityNameRequest -> {
+                val cityName = interactor.getCachedCityName() ?: ""
+                processDataEvent(DataEvent.OnCachedCityNameRead(cityName))
+            }
+            is UiEvent.OnCachedCityNameShow -> {
+                return previousState.copy(isCityNameRequested = false)
+            }
+            is UiEvent.OnErrorMessageShow -> {
+                return previousState.copy(errorMessage = null)
+            }
+            is UiEvent.OnRequestSuggestions -> {
+                viewModelScope.launch {
+                    interactor.getCityNameSuggestions(event.prefix).fold(
+                        onSuccess = { suggestions ->
+                            processDataEvent(DataEvent.OnSuccessSuggestionsRequest(suggestions))
+                        },
+                        onError = { error ->
+                            val errorMessage = error.localizedMessage ?: "Something went wrong"
+                            processDataEvent(DataEvent.OnFailureSuggestionsRequest(errorMessage))
+                        }
+                    )
+                }
+            }
+            is UiEvent.OnSaveButtonClick -> {
+                interactor.saveCityName(event.cityName)
+                processDataEvent(DataEvent.OnSettingsSave)
+            }
+            is DataEvent.OnSettingsSave -> {
+                return previousState.copy(isSettingsSaved = true)
+            }
+            is DataEvent.OnCachedCityNameRead -> {
+                return previousState.copy(isCityNameRequested = true, cityName = event.cityName)
+            }
+            is DataEvent.OnSuccessSuggestionsRequest -> {
+                return previousState.copy(cityNameSuggestions = event.suggestions)
+            }
+            is DataEvent.OnFailureSuggestionsRequest -> {
+                return previousState.copy(errorMessage = event.errorMessage)
+            }
         }
+
+        return null
     }
 
-    fun saveCityName(cityName: String) {
-        interactor.saveCityName(cityName)
-        _onSaveComplete.postValue(true)
-    }
 }
